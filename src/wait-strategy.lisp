@@ -103,7 +103,6 @@
         (sequencer-get-highest-published-sequence (sequence-barrier-sequencer barrier)
                                                   sequence-number
                                                   available-sequence-number))))
-  
 
 (declaim (inline busy-spin-wait-strategy-signal-all-when-blocking))
 (defun busy-spin-wait-strategy-signal-all-when-blocking (&key

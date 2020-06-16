@@ -3,8 +3,9 @@
 (plan nil)
 
 (subtest "test :single-producer-sequencer"
-  (let ((iterations (* 1000 1000 100))
-        (expect-result 4999999950000000))
+  (let* ((iterations (* 1000 1000 100))
+         (expect-result (loop for i from 0 below iterations
+                           sum i)))
     (subtest "test disruptor with different wait strategies"
       (subtest (format nil
                        "test disruptor with yielding-wait-strategy, iterations: ~A"
@@ -47,6 +48,7 @@
                        "test disruptor with lite-timeout-blocking-wait-strategy, iterations: ~A"
                        iterations)
         (is (test-disruptor :wait-strategy-type :lite-timeout-blocking-wait-strategy
+                            :timeout-second 0.0000001d0 ;; 100ns
                             :iterations iterations)
             expect-result)))))
 

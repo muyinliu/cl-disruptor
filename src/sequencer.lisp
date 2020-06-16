@@ -13,13 +13,15 @@
                                            cursor
                                            gating-sequences
                                            &aux
-                                           (available-buffer (make-array buffer-size
-                                                                         :initial-element -1))
+                                           (available-buffer
+                                            (if (eql :single-producer-sequencer type)
+                                                (make-array 0)
+                                                (make-array buffer-size
+                                                            :initial-element -1)))
                                            (index-mask (- buffer-size 1))
                                            (index-shift (truncate (log buffer-size 2))))))
   (type :single-producer-sequencer :type keyword)
-  (buffer-size 0
-               :type fixnum)
+  (buffer-size 0 :type fixnum)
   (wait-strategy nil) ;; TODO useless??
   (cursor (make-sequence-number :value +sequencer-initial-cursor-value+)
           :type sequence-number)
@@ -235,14 +237,6 @@
            :condition-variable condition-variable
            :signal-needed signal-needed))
 
-(defun sequencer-new-barrier (sequencer &key dependent-sequences)
-  (declare (optimize (speed 3) (safety 0) (debug 0)))
-  (make-sequence-barrier :sequencer sequencer
-                         :wait-strategy (sequencer-wait-strategy sequencer) ;; TODO useless??
-                         :cursor-sequence-number (sequencer-cursor sequencer)
-                         :dependent-sequence-number (or dependent-sequences
-                                                        (list (sequencer-cursor sequencer)))))
-
 (declaim (inline sequencer-get-highest-published-sequence))
 (defun sequencer-get-highest-published-sequence (sequencer
                                                  low-sequence-number
@@ -259,6 +253,14 @@
               (return-from sequencer-get-highest-published-sequence
                 (the fixnum (- sequence-number 1))))
          finally (return available-sequence-number))))
+
+(defun sequencer-new-barrier (sequencer &key dependent-sequences)
+  (declare (optimize (speed 3) (safety 0) (debug 0)))
+  (make-sequence-barrier :sequencer sequencer
+                         :wait-strategy (sequencer-wait-strategy sequencer) ;; TODO useless??
+                         :cursor-sequence-number (sequencer-cursor sequencer)
+                         :dependent-sequence-number (or dependent-sequences
+                                                        (list (sequencer-cursor sequencer)))))
 
 (defmacro sequencer-next (sequencer)
   (case sequencer

@@ -16,11 +16,13 @@
               condition-variable
               signal-needed
               timeout-second)
-  (declare (type batch-event-processor event-processor)
+  (declare (optimize (speed 3) (safety 0) (debug 0))
+           (type batch-event-processor event-processor)
            (type function wait-for-function))
-  (let ((next-sequence-number (+ 1
-                                 (sequence-number-value
-                                  (batch-event-processor-sequence event-processor))))
+  (let ((next-sequence-number (the fixnum
+                                   (+ 1
+                                      (sequence-number-value
+                                       (batch-event-processor-sequence event-processor)))))
         (event-handler (batch-event-processor-event-handler event-processor))
         (sequence-barrier (batch-event-processor-sequence-barrier event-processor)))
     (declare (type fixnum next-sequence-number)
@@ -47,12 +49,14 @@
                while (<= next-sequence-number available-sequence-number)
                do (progn
                     ;; TODO should ignore handle-result
-                    (let ((handle-result (funcall event-handler
-                                                  (get-event (batch-event-processor-data-provider event-processor)
-                                                             next-sequence-number)
-                                                  next-sequence-number
-                                                  (= next-sequence-number
-                                                     available-sequence-number))))
+                    (let ((handle-result (funcall
+                                          event-handler
+                                          (get-event (batch-event-processor-data-provider
+                                                      event-processor)
+                                                     next-sequence-number)
+                                          next-sequence-number
+                                          (= next-sequence-number
+                                             available-sequence-number))))
                       ;; (format *terminal-io* "handle-result: ~S~%" handle-result)
                       (when handle-result
                         ;; FIXME

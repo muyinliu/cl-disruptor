@@ -27,5 +27,5 @@
 (disruptor-test:test-disruptor :sequencer-type :multi-producer-sequencer
                                :producer-count 3
                                :wait-strategy-type :yielding-wait-strategy
-                               :iterations (* 1000 1000 10))
+                               :iterations (* 1000 1000 3))
 (cl-user::report)
