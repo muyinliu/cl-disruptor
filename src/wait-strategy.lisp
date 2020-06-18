@@ -4,12 +4,11 @@
 
 ;; utils
 
-(defmacro min-sequence-number (dependent-sequence-number)
+(defmacro min-sequence-number (dependent-sequence-numbers)
   `(loop
-      with minimal fixnum = (sequence-number-value (first ,dependent-sequence-number))
-      for sequence-number of-type sequence-number in (rest ,dependent-sequence-number)
-      do (let ((value (sequence-number-value
-                       sequence-number)))
+      with minimal fixnum = (sequence-number-value (first ,dependent-sequence-numbers))
+      for sequence-number of-type sequence-number in (rest ,dependent-sequence-numbers)
+      do (let ((value (sequence-number-value sequence-number)))
            (declare (type fixnum value))
            (when (< value minimal)
              (setf minimal value)))
@@ -22,7 +21,7 @@
 (declaim (inline yielding-wait-strategy-wait-for))
 (defun yielding-wait-strategy-wait-for (sequence-number
                                         cursor
-                                        dependent-sequence-number
+                                        dependent-sequence-numbers
                                         barrier
                                         &key
                                           (retries +yielding-wait-strategy-spin-tries+)
@@ -37,12 +36,12 @@
                    lock condition-variable signal-needed
                    timeout-second))
   (declare (type fixnum sequence-number retries)
-           (type list dependent-sequence-number))
+           (type list dependent-sequence-numbers))
   (let ((available-sequence-number 
          (loop
             with counter fixnum = retries
             for available-sequence-number fixnum = (min-sequence-number
-                                                    dependent-sequence-number)
+                                                    dependent-sequence-numbers)
             while (< available-sequence-number sequence-number)
             do (progn
                  ;; (check-alert barrier) ;; FIXME
@@ -71,7 +70,7 @@
 (declaim (inline busy-spin-wait-strategy-wait-for))
 (defun busy-spin-wait-strategy-wait-for (sequence-number
                                          cursor
-                                         dependent-sequence-number
+                                         dependent-sequence-numbers
                                          barrier
                                          &key
                                            retries
@@ -87,11 +86,11 @@
                    timeout-second))
   (declare (type fixnum sequence-number)
            (type sequence-number cursor)
-           (type list dependent-sequence-number)
+           (type list dependent-sequence-numbers)
            (type sequence-barrier barrier))
   (let ((available-sequence-number 
          (loop
-            for available-sequence-number = (min-sequence-number dependent-sequence-number)
+            for available-sequence-number = (min-sequence-number dependent-sequence-numbers)
             while (< available-sequence-number sequence-number)
             do (progn
                  ;; (check-alert barrier) ;; FIXME
@@ -122,7 +121,7 @@
 (declaim (inline sleeping-wait-strategy-wait-for))
 (defun sleeping-wait-strategy-wait-for (sequence-number
                                         cursor
-                                        dependent-sequence-number
+                                        dependent-sequence-numbers
                                         barrier
                                         &key
                                           (retries +sleeping-wait-strategy-default-tries+)
@@ -136,13 +135,13 @@
                    lock condition-variable signal-needed
                    timeout-second))
   (declare (type fixnum sequence-number retries)
-           (type list dependent-sequence-number)
+           (type list dependent-sequence-numbers)
            (type double-float sleep-second))
   (let ((available-sequence-number 
          (loop
             with counter fixnum = retries
             for available-sequence-number fixnum = (min-sequence-number
-                                                    dependent-sequence-number)
+                                                    dependent-sequence-numbers)
             while (< available-sequence-number sequence-number)
             do (progn
                  ;; (check-alert barrier) ;; FIXME
@@ -176,7 +175,7 @@
 (declaim (inline blocking-wait-strategy-wait-for))
 (defun blocking-wait-strategy-wait-for (sequence-number
                                         cursor
-                                        dependent-sequence-number
+                                        dependent-sequence-numbers
                                         barrier
                                         &key
                                           retries
@@ -191,7 +190,7 @@
                    timeout-second))
   (declare (type fixnum sequence-number)
            (type sequence-number cursor)
-           (type list dependent-sequence-number)
+           (type list dependent-sequence-numbers)
            (type sequence-barrier barrier))
   (when (< (sequence-number-value cursor) sequence-number)
     (bt:with-lock-held (lock)
@@ -202,7 +201,7 @@
               (bt:condition-wait condition-variable lock)))))
   (let ((available-sequence-number 
          (loop
-            for available-sequence-number = (min-sequence-number dependent-sequence-number)
+            for available-sequence-number = (min-sequence-number dependent-sequence-numbers)
             while (< available-sequence-number sequence-number)
             do (progn
                  ;; (check-alert barrier) ;; FIXME
@@ -231,7 +230,7 @@
 (declaim (inline lite-blocking-wait-strategy-wait-for))
 (defun lite-blocking-wait-strategy-wait-for (sequence-number
                                              cursor
-                                             dependent-sequence-number
+                                             dependent-sequence-numbers
                                              barrier
                                              &key
                                                retries
@@ -245,7 +244,7 @@
                    timeout-second))
   (declare (type fixnum sequence-number)
            (type sequence-number cursor)
-           (type list dependent-sequence-number)
+           (type list dependent-sequence-numbers)
            (type sequence-barrier barrier))
   (when (< (sequence-number-value cursor) sequence-number)
     (bt:with-lock-held (lock)
@@ -259,7 +258,7 @@
          while (< (sequence-number-value cursor) sequence-number))))
   (let ((available-sequence-number 
          (loop
-            for available-sequence-number = (min-sequence-number dependent-sequence-number)
+            for available-sequence-number = (min-sequence-number dependent-sequence-numbers)
             while (< available-sequence-number sequence-number)
             do (progn
                  ;; (check-alert barrier) ;; FIXME
@@ -288,7 +287,7 @@
 (declaim (inline timeout-blocking-wait-strategy-wait-for))
 (defun timeout-blocking-wait-strategy-wait-for (sequence-number
                                                 cursor
-                                                dependent-sequence-number
+                                                dependent-sequence-numbers
                                                 barrier
                                                 &key
                                                   retries
@@ -302,7 +301,7 @@
                    signal-needed))
   (declare (type fixnum sequence-number)
            (type sequence-number cursor)
-           (type list dependent-sequence-number)
+           (type list dependent-sequence-numbers)
            (type sequence-barrier barrier))
   (when (< (sequence-number-value cursor) sequence-number)
     (bt:with-lock-held (lock)
@@ -314,7 +313,7 @@
               (bt:condition-wait condition-variable lock :timeout timeout-second)))))
   (let ((available-sequence-number 
          (loop
-            for available-sequence-number = (min-sequence-number dependent-sequence-number)
+            for available-sequence-number = (min-sequence-number dependent-sequence-numbers)
             while (< available-sequence-number sequence-number)
             do (progn
                  ;; (check-alert barrier) ;; FIXME
@@ -342,7 +341,7 @@
 (declaim (inline lite-timeout-blocking-wait-strategy-wait-for))
 (defun lite-timeout-blocking-wait-strategy-wait-for (sequence-number
                                                      cursor
-                                                     dependent-sequence-number
+                                                     dependent-sequence-numbers
                                                      barrier
                                                      &key
                                                        retries
@@ -355,7 +354,7 @@
   (declare (ignore retries sleep-second))
   (declare (type fixnum sequence-number)
            (type sequence-number cursor)
-           (type list dependent-sequence-number)
+           (type list dependent-sequence-numbers)
            (type sequence-barrier barrier))
   (when (< (sequence-number-value cursor) sequence-number)
     (bt:with-lock-held (lock)
@@ -368,7 +367,7 @@
               (bt:condition-wait condition-variable lock :timeout timeout-second)))))
   (let ((available-sequence-number 
          (loop
-            for available-sequence-number = (min-sequence-number dependent-sequence-number)
+            for available-sequence-number = (min-sequence-number dependent-sequence-numbers)
             while (< available-sequence-number sequence-number)
             do (progn
                  ;; (check-alert barrier) ;; FIXME

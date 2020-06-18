@@ -18,6 +18,7 @@
    #:make-sequencer
    #:sequencer-next
    #:sequencer-publish
+   #:sequencer-publish-low-high
    #:add-gating-sequence-numbers
    #:sequencer-new-barrier
    ;; event-processor

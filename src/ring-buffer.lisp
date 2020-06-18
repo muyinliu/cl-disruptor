@@ -32,10 +32,10 @@
   (pad13 0 :type fixnum)
   (pad14 0 :type fixnum))
 
-(defun ring-buffer-new-barrier (ring-buffer &key dependent-sequences)
+(defun ring-buffer-new-barrier (ring-buffer &key dependent-sequence-numbers)
   (declare (optimize (speed 3) (safety 0) (debug 0)))
   (sequencer-new-barrier (ring-buffer-sequencer ring-buffer)
-                         :dependent-sequences dependent-sequences))
+                         :dependent-sequence-numbers dependent-sequence-numbers))
 
 (defmacro get-event (ring-buffer sequence-number)
   `(svref (ring-buffer-entries ,ring-buffer)

@@ -74,69 +74,133 @@ OR in Common Lisp:
    test disruptor with different wait strategies
      test disruptor with yielding-wait-strategy, iterations: 100000000
 Evaluation took:
-  0.857 seconds of real time
-  1.307333 seconds of total run time (1.248807 user, 0.058526 system)
-  152.51% CPU
-  1,880,712,314 processor cycles
+  0.755 seconds of real time
+  1.221199 seconds of total run time (1.174900 user, 0.046299 system)
+  161.72% CPU
+  1,658,039,878 processor cycles
   64 bytes consed
 
-        ✓ 4999999950000000 is expected to be 4999999950000000 (861ms)
+        ✓ 4999999950000000 is expected to be 4999999950000000 (759ms)
      test disruptor with busy-spin-wait-strategy, iterations: 100000000
 Evaluation took:
-  0.853 seconds of real time
-  1.411759 seconds of total run time (1.336123 user, 0.075636 system)
-  165.53% CPU
-  1,872,284,420 processor cycles
+  0.748 seconds of real time
+  1.213246 seconds of total run time (1.165795 user, 0.047451 system)
+  162.17% CPU
+  1,641,921,150 processor cycles
   64 bytes consed
 
-        ✓ 4999999950000000 is expected to be 4999999950000000 (858ms)
+        ✓ 4999999950000000 is expected to be 4999999950000000 (752ms)
      test disruptor with sleeping-wait-strategy, iterations: 100000000
 Evaluation took:
-  0.860 seconds of real time
-  1.309980 seconds of total run time (1.252314 user, 0.057666 system)
-  152.33% CPU
-  1,888,147,768 processor cycles
-  48,992 bytes consed
+  0.755 seconds of real time
+  1.230548 seconds of total run time (1.181151 user, 0.049397 system)
+  163.05% CPU
+  1,657,818,770 processor cycles
+  49,120 bytes consed
 
-        ✓ 4999999950000000 is expected to be 4999999950000000 (866ms)
+        ✓ 4999999950000000 is expected to be 4999999950000000 (762ms)
      test disruptor with blocking-wait-strategy, iterations: 100000000
 Evaluation took:
-  15.976 seconds of real time
-  28.032003 seconds of total run time (25.068070 user, 2.963933 system)
-  [ Run times consist of 0.012 seconds GC time, and 28.021 seconds non-GC time. ]
-  175.46% CPU
-  35,065,608,716 processor cycles
-  105,601,024 bytes consed
+  14.946 seconds of real time
+  26.052318 seconds of total run time (23.173754 user, 2.878564 system)
+  [ Run times consist of 0.007 seconds GC time, and 26.046 seconds non-GC time. ]
+  174.31% CPU
+  32,805,893,219 processor cycles
+  86,332,432 bytes consed
 
-        ✓ 4999999950000000 is expected to be 4999999950000000 (15982ms)
+        ✓ 4999999950000000 is expected to be 4999999950000000 (14952ms)
      test disruptor with lite-blocking-wait-strategy, iterations: 100000000
 Evaluation took:
-  4.346 seconds of real time
-  8.569493 seconds of total run time (8.545145 user, 0.024348 system)
-  197.17% CPU
-  9,537,944,642 processor cycles
-  36,288 bytes consed
+  3.315 seconds of real time
+  6.520990 seconds of total run time (6.502129 user, 0.018861 system)
+  196.71% CPU
+  7,276,616,582 processor cycles
+  62,256 bytes consed
 
-        ✓ 4999999950000000 is expected to be 4999999950000000 (4349ms)
+        ✓ 4999999950000000 is expected to be 4999999950000000 (3319ms)
      test disruptor with timeout-blocking-wait-strategy, iterations: 100000000
 Evaluation took:
-  31.340 seconds of real time
-  62.434569 seconds of total run time (62.264779 user, 0.169790 system)
-  [ Run times consist of 0.061 seconds GC time, and 62.374 seconds non-GC time. ]
-  199.22% CPU
-  68,791,162,465 processor cycles
-  906,399,408 bytes consed
+  29.908 seconds of real time
+  59.551527 seconds of total run time (59.457156 user, 0.094371 system)
+  [ Run times consist of 0.051 seconds GC time, and 59.501 seconds non-GC time. ]
+  199.12% CPU
+  65,646,079,602 processor cycles
+  761,067,376 bytes consed
 
-        ✓ 4999999950000000 is expected to be 4999999950000000 (31346ms)
+        ✓ 4999999950000000 is expected to be 4999999950000000 (29921ms)
      test disruptor with lite-timeout-blocking-wait-strategy, iterations: 100000000
 Evaluation took:
-  3.635 seconds of real time
-  7.155049 seconds of total run time (7.144412 user, 0.010637 system)
-  196.84% CPU
-  7,978,338,248 processor cycles
-  556,896 bytes consed
+  3.950 seconds of real time
+  7.780227 seconds of total run time (7.772371 user, 0.007856 system)
+  196.96% CPU
+  8,671,010,553 processor cycles
+  385,216 bytes consed
 
-        ✓ 4999999950000000 is expected to be 4999999950000000 (3640ms)
+        ✓ 4999999950000000 is expected to be 4999999950000000 (3954ms)
+   test disruptor with batch enabled
+     test disruptor with yielding-wait-strategy, iterations: 100000000, batch-size: 10
+Evaluation took:
+  0.760 seconds of real time
+  1.128999 seconds of total run time (1.071976 user, 0.057023 system)
+  148.55% CPU
+  1,668,450,968 processor cycles
+  64 bytes consed
+
+        ✓ 4999999950000000 is expected to be 4999999950000000 (763ms)
+     test disruptor with busy-spin-wait-strategy, iterations: 100000000, batch-size: 10
+Evaluation took:
+  0.757 seconds of real time
+  1.118201 seconds of total run time (1.061443 user, 0.056758 system)
+  147.69% CPU
+  1,661,961,034 processor cycles
+  64 bytes consed
+
+        ✓ 4999999950000000 is expected to be 4999999950000000 (761ms)
+     test disruptor with sleeping-wait-strategy, iterations: 100000000, batch-size: 10
+Evaluation took:
+  0.759 seconds of real time
+  1.146547 seconds of total run time (1.083409 user, 0.063138 system)
+  151.12% CPU
+  1,666,856,060 processor cycles
+  49,008 bytes consed
+
+        ✓ 4999999950000000 is expected to be 4999999950000000 (764ms)
+     test disruptor with blocking-wait-strategy, iterations: 100000000, batch-size: 10
+Evaluation took:
+  1.671 seconds of real time
+  3.204213 seconds of total run time (3.096624 user, 0.107589 system)
+  191.74% CPU
+  3,666,665,516 processor cycles
+  1,469,936 bytes consed
+
+        ✓ 4999999950000000 is expected to be 4999999950000000 (1674ms)
+     test disruptor with lite-blocking-wait-strategy, iterations: 100000000, batch-size: 10
+Evaluation took:
+  0.760 seconds of real time
+  1.186828 seconds of total run time (1.140082 user, 0.046746 system)
+  156.18% CPU
+  1,667,627,624 processor cycles
+  80 bytes consed
+
+        ✓ 4999999950000000 is expected to be 4999999950000000 (764ms)
+     test disruptor with timeout-blocking-wait-strategy, iterations: 100000000, batch-size: 10
+Evaluation took:
+  3.116 seconds of real time
+  6.176593 seconds of total run time (6.168216 user, 0.008377 system)
+  198.23% CPU
+  6,841,322,677 processor cycles
+  20,736,128 bytes consed
+
+        ✓ 4999999950000000 is expected to be 4999999950000000 (3120ms)
+     test disruptor with lite-timeout-blocking-wait-strategy, iterations: 100000000, batch-size: 10
+Evaluation took:
+  0.751 seconds of real time
+  1.199041 seconds of total run time (1.154622 user, 0.044419 system)
+  159.65% CPU
+  1,649,052,030 processor cycles
+  21,536 bytes consed
+
+        ✓ 4999999950000000 is expected to be 4999999950000000 (754ms)
 
 
 
@@ -144,70 +208,134 @@ Evaluation took:
    test disruptor with different wait strategies
      test disruptor with yielding-wait-strategy, iterations: 3000000, producer-count: 3
 Evaluation took:
-  0.862 seconds of real time
-  3.052423 seconds of total run time (3.046341 user, 0.006082 system)
-  354.06% CPU
-  1,892,991,966 processor cycles
+  0.858 seconds of real time
+  3.364048 seconds of total run time (3.358236 user, 0.005812 system)
+  392.07% CPU
+  1,884,374,821 processor cycles
   128 bytes consed
 
-        ✓ 13499995500000 is expected to be 13499995500000 (864ms)
+        ✓ 13499995500000 is expected to be 13499995500000 (862ms)
      test disruptor with busy-spin-wait-strategy, iterations: 3000000, producer-count: 3
 Evaluation took:
-  0.756 seconds of real time
-  2.958209 seconds of total run time (2.953790 user, 0.004419 system)
-  391.27% CPU
-  1,659,277,787 processor cycles
+  0.971 seconds of real time
+  3.603272 seconds of total run time (3.593018 user, 0.010254 system)
+  371.06% CPU
+  2,131,650,161 processor cycles
   128 bytes consed
 
-        ✓ 13499995500000 is expected to be 13499995500000 (759ms)
+        ✓ 13499995500000 is expected to be 13499995500000 (975ms)
      test disruptor with sleeping-wait-strategy, iterations: 3000000, producer-count: 3
 Evaluation took:
-  0.861 seconds of real time
-  3.175260 seconds of total run time (3.167547 user, 0.007713 system)
-  [ Run times consist of 0.007 seconds GC time, and 3.169 seconds non-GC time. ]
-  368.76% CPU
-  1,889,180,668 processor cycles
-  64,693,072 bytes consed
+  0.765 seconds of real time
+  2.860728 seconds of total run time (2.848427 user, 0.012301 system)
+  [ Run times consist of 0.005 seconds GC time, and 2.856 seconds non-GC time. ]
+  373.99% CPU
+  1,680,188,520 processor cycles
+  57,996,976 bytes consed
 
-        ✓ 13499995500000 is expected to be 13499995500000 (864ms)
+        ✓ 13499995500000 is expected to be 13499995500000 (770ms)
      test disruptor with blocking-wait-strategy, iterations: 3000000, producer-count: 3
 Evaluation took:
-  2.699 seconds of real time
-  10.643970 seconds of total run time (10.589291 user, 0.054679 system)
-  394.37% CPU
-  5,923,964,094 processor cycles
-  51,792 bytes consed
+  2.730 seconds of real time
+  10.431375 seconds of total run time (10.397394 user, 0.033981 system)
+  382.09% CPU
+  5,993,640,333 processor cycles
+  38,768 bytes consed
 
-        ✓ 13499995500000 is expected to be 13499995500000 (2702ms)
+        ✓ 13499995500000 is expected to be 13499995500000 (2734ms)
      test disruptor with lite-blocking-wait-strategy, iterations: 3000000, producer-count: 3
 Evaluation took:
-  0.851 seconds of real time
-  3.080322 seconds of total run time (3.074327 user, 0.005995 system)
-  361.93% CPU
-  1,869,652,645 processor cycles
-  144 bytes consed
+  0.758 seconds of real time
+  2.980349 seconds of total run time (2.972432 user, 0.007917 system)
+  393.14% CPU
+  1,664,963,703 processor cycles
+  192 bytes consed
 
-        ✓ 13499995500000 is expected to be 13499995500000 (856ms)
+        ✓ 13499995500000 is expected to be 13499995500000 (762ms)
      test disruptor with timeout-blocking-wait-strategy, iterations: 3000000, producer-count: 3
 Evaluation took:
-  2.718 seconds of real time
-  10.615956 seconds of total run time (10.585358 user, 0.030598 system)
-  390.58% CPU
-  5,964,468,801 processor cycles
-  305,824 bytes consed
+  2.838 seconds of real time
+  11.080804 seconds of total run time (11.057866 user, 0.022938 system)
+  390.45% CPU
+  6,228,709,791 processor cycles
+  92,224 bytes consed
 
-        ✓ 13499995500000 is expected to be 13499995500000 (2721ms)
+        ✓ 13499995500000 is expected to be 13499995500000 (2841ms)
      test disruptor with lite-timeout-blocking-wait-strategy, iterations: 3000000, producer-count: 3
 Evaluation took:
-  0.861 seconds of real time
-  3.095976 seconds of total run time (3.088404 user, 0.007572 system)
-  359.58% CPU
-  1,888,059,791 processor cycles
-  4,480 bytes consed
+  0.866 seconds of real time
+  3.066980 seconds of total run time (3.057374 user, 0.009606 system)
+  354.16% CPU
+  1,901,229,018 processor cycles
+  6,928 bytes consed
 
-        ✓ 13499995500000 is expected to be 13499995500000 (866ms)
+        ✓ 13499995500000 is expected to be 13499995500000 (871ms)
+   test disruptor with different wait strategies
+     test disruptor with yielding-wait-strategy, iterations: 10000000, producer-count: 3, batch-size: 10
+Evaluation took:
+  0.748 seconds of real time
+  1.657268 seconds of total run time (1.367189 user, 0.290079 system)
+  221.52% CPU
+  1,643,022,156 processor cycles
+  128 bytes consed
 
-✓ 2 tests completed (67534ms)
+        ✓ 149999985000000 is expected to be 149999985000000 (752ms)
+     test disruptor with busy-spin-wait-strategy, iterations: 10000000, producer-count: 3, batch-size: 10
+Evaluation took:
+  0.737 seconds of real time
+  1.667593 seconds of total run time (1.376098 user, 0.291495 system)
+  226.32% CPU
+  1,617,688,869 processor cycles
+  128 bytes consed
+
+        ✓ 149999985000000 is expected to be 149999985000000 (741ms)
+     test disruptor with sleeping-wait-strategy, iterations: 10000000, producer-count: 3, batch-size: 10
+Evaluation took:
+  0.748 seconds of real time
+  1.660270 seconds of total run time (1.372019 user, 0.288251 system)
+  221.93% CPU
+  1,641,949,000 processor cycles
+  14,816 bytes consed
+
+        ✓ 149999985000000 is expected to be 149999985000000 (752ms)
+     test disruptor with blocking-wait-strategy, iterations: 10000000, producer-count: 3, batch-size: 10
+Evaluation took:
+  0.748 seconds of real time
+  2.611786 seconds of total run time (2.540682 user, 0.071104 system)
+  349.20% CPU
+  1,641,319,864 processor cycles
+  144 bytes consed
+
+        ✓ 149999985000000 is expected to be 149999985000000 (752ms)
+     test disruptor with lite-blocking-wait-strategy, iterations: 10000000, producer-count: 3, batch-size: 10
+Evaluation took:
+  0.752 seconds of real time
+  1.702004 seconds of total run time (1.432486 user, 0.269518 system)
+  226.33% CPU
+  1,649,770,828 processor cycles
+  144 bytes consed
+
+        ✓ 149999985000000 is expected to be 149999985000000 (755ms)
+     test disruptor with timeout-blocking-wait-strategy, iterations: 10000000, producer-count: 3, batch-size: 10
+Evaluation took:
+  0.749 seconds of real time
+  2.537763 seconds of total run time (2.482813 user, 0.054950 system)
+  338.85% CPU
+  1,644,843,087 processor cycles
+  4,704 bytes consed
+
+        ✓ 149999985000000 is expected to be 149999985000000 (753ms)
+     test disruptor with lite-timeout-blocking-wait-strategy, iterations: 10000000, producer-count: 3, batch-size: 10
+Evaluation took:
+  0.760 seconds of real time
+  1.746462 seconds of total run time (1.463497 user, 0.282965 system)
+  229.74% CPU
+  1,667,378,802 processor cycles
+  7,936 bytes consed
+
+        ✓ 149999985000000 is expected to be 149999985000000 (763ms)
+
+✓ 2 tests completed (78102ms)
 ```
 
 -----------------------------------------------------------------
@@ -219,24 +347,24 @@ Note: included in test cases, see section [Test][] above.
 
 On my MacBook Pro mid2014(with CPU Intel® Core™ i7-4770HQ 3.4 GHz, with macOS 10.13.6):
 
-| type   | batch-size | waitStrategy                      |          throughput | note          |
-|--------|-----------:|-----------------------------------|--------------------:|---------------|
-| 1 to 1 |          x | `YieldingWaitStrategy`            | 116,686,114 ops/sec | default       |
-| 1 to 1 |          x | `BusySpinWaitStrategy`            | 117,233,294 ops/sec | fastest       |
-| 1 to 1 |          x | `SleepingWaitStrategy`            | 116,279,069 ops/sec | second fast   |
-| 1 to 1 |          x | `BlockingWaitStrategy`            |   6,259,389 ops/sec | slowest       |
-| 1 to 1 |          x | `LiteBlockingWaitStrategy`        |  23,009,664 ops/sec | slow          |
-| 1 to 1 |          x | `TimeoutBlockingWaitStrategy`     |   3,190,810 ops/sec | second slow ? |
-| 1 to 1 |          x | `LiteTimeoutBlockingWaitStrategy` |  27,510,316 ops/sec |               |
-| 1 to 1 |         10 | `YieldingWaitStrategy`            |             ops/sec |               |
-| 1 to 1 |          x | `YieldingWaitStrategy`            |             ops/sec | poller        |
-| 1 to 1 |          x | `YieldingWaitStrategy`            |             ops/sec | `LongArray`   |
-| 1 to 3 |          x | `YieldingWaitStrategy`            |             ops/sec |               |
-| 1 to 3 |          x | `YieldingWaitStrategy`            |             ops/sec | pipeline      |
-| 1 to 3 |          x | `YieldingWaitStrategy`            |             ops/sec | diamond       |
-| 3 to 1 |          x | `BusySpinWaitStrategy`            |   3,968,253 ops/sec |               |
-| 3 to 1 |         10 | `BusySpinWaitStrategy`            |             ops/sec |               |
-| 3 to 3 |          x | `YieldingWaitStrategy`            |                     | 3 RB 1 EP     |
+| type   | batch-size | waitStrategy                      |            throughput | note        |
+|--------|-----------:|-----------------------------------|----------------------:|-------------|
+| 1 to 1 |          x | `YieldingWaitStrategy`            | 1,510,574,018 ops/sec | default     |
+| 1 to 1 |          x | `BusySpinWaitStrategy`            | 1,508,295,625 ops/sec | fastest     |
+| 1 to 1 |          x | `SleepingWaitStrategy`            | 1,522,070,015 ops/sec | second fast |
+| 1 to 1 |          x | `BlockingWaitStrategy`            |    63,111,391 ops/sec | second slow |
+| 1 to 1 |          x | `LiteBlockingWaitStrategy`        |   283,687,943 ops/sec | slow        |
+| 1 to 1 |          x | `TimeoutBlockingWaitStrategy`     |    32,408,607 ops/sec | slowest     |
+| 1 to 1 |          x | `LiteTimeoutBlockingWaitStrategy` |   251,256,281 ops/sec |             |
+| 1 to 1 |         10 | `YieldingWaitStrategy`            | 1,531,393,568 ops/sec |             |
+| 1 to 1 |          x | `YieldingWaitStrategy`            |               ops/sec | poller      |
+| 1 to 1 |          x | `YieldingWaitStrategy`            |               ops/sec | `LongArray` |
+| 1 to 3 |          x | `YieldingWaitStrategy`            |               ops/sec |             |
+| 1 to 3 |          x | `YieldingWaitStrategy`            |               ops/sec | pipeline    |
+| 1 to 3 |          x | `YieldingWaitStrategy`            |               ops/sec | diamond     |
+| 3 to 1 |          x | `BusySpinWaitStrategy`            |    10,285,714 ops/sec |             |
+| 3 to 1 |         10 | `BusySpinWaitStrategy`            |    39,473,684 ops/sec |             |
+| 3 to 3 |          x | `YieldingWaitStrategy`            |                       | 3 RB 1 EP   |
 
 
 -----------------------------------------------------------------
@@ -257,18 +385,18 @@ OR in Common Lisp:
 ```=>
 profiling :single-producer-sequencer
 Evaluation took:
-  0.750 seconds of real time
-  1.162703 seconds of total run time (1.104951 user, 0.057752 system)
-  155.07% CPU
-  1,646,678,114 processor cycles
+  0.745 seconds of real time
+  1.163501 seconds of total run time (1.107574 user, 0.055927 system)
+  156.24% CPU
+  1,636,223,815 processor cycles
   64 bytes consed
 
 measuring PROFILE overhead..done
   seconds  |     gc     |   consed  | calls |  sec/call  |  name
 -------------------------------------------------------
-     1.157 |      0.000 |        32 |     1 |   1.156742 | CL-DISRUPTOR:RUN
-     0.004 |      0.000 | 2,654,224 |     1 |   0.003999 | CL-DISRUPTOR:MAKE-RING-BUFFER
-     0.000 |      0.000 |         0 | 3,055 |   0.000000 | CL-DISRUPTOR::YIELDING-WAIT-STRATEGY-WAIT-FOR
+     1.154 |      0.000 |        32 |     1 |   1.153740 | CL-DISRUPTOR:RUN
+     0.005 |      0.000 | 2,621,456 |     1 |   0.004999 | CL-DISRUPTOR:MAKE-RING-BUFFER
+     0.004 |      0.000 |         0 | 3,057 |   0.000001 | CL-DISRUPTOR::YIELDING-WAIT-STRATEGY-WAIT-FOR
      0.000 |      0.000 |         0 |     2 |   0.000000 | CL-DISRUPTOR::MAKE-SEQUENCE-NUMBER
      0.000 |      0.000 |         0 |     1 |   0.000000 | CL-DISRUPTOR::MAKE-SEQUENCE-BARRIER
      0.000 |      0.000 |         0 |     1 |   0.000000 | CL-DISRUPTOR:MAKE-BATCH-EVENT-PROCESSOR
@@ -277,11 +405,11 @@ measuring PROFILE overhead..done
      0.000 |      0.000 |         0 |     1 |   0.000000 | CL-DISRUPTOR:MAKE-SEQUENCER
      0.000 |      0.000 |         0 |     1 |   0.000000 | CL-DISRUPTOR:SEQUENCER-NEW-BARRIER
 -------------------------------------------------------
-     1.161 |      0.000 | 2,654,256 | 3,065 |            | Total
+     1.163 |      0.000 | 2,621,488 | 3,067 |            | Total
 
 estimated total profiling overhead: 0.01 seconds
 overhead estimation parameters:
-  8.000001e-9s/call, 2.002e-6s total profiling, 9.36e-7s internal profiling
+  8.000001e-9s/call, 1.9860001e-6s total profiling, 9.2e-7s internal profiling
 
 These functions were not called:
  (SETF CL-DISRUPTOR::BATCH-EVENT-PROCESSOR-DATA-PROVIDER)
@@ -335,8 +463,8 @@ These functions were not called:
  CL-DISRUPTOR::SEQUENCE-BARRIER-ALERTED
  (SETF CL-DISRUPTOR::SEQUENCE-BARRIER-CURSOR-SEQUENCE-NUMBER)
  CL-DISRUPTOR::SEQUENCE-BARRIER-CURSOR-SEQUENCE-NUMBER
- (SETF CL-DISRUPTOR::SEQUENCE-BARRIER-DEPENDENT-SEQUENCE-NUMBER)
- CL-DISRUPTOR::SEQUENCE-BARRIER-DEPENDENT-SEQUENCE-NUMBER
+ (SETF CL-DISRUPTOR::SEQUENCE-BARRIER-DEPENDENT-SEQUENCE-NUMBERS)
+ CL-DISRUPTOR::SEQUENCE-BARRIER-DEPENDENT-SEQUENCE-NUMBERS
  CL-DISRUPTOR::SEQUENCE-BARRIER-P
  (SETF CL-DISRUPTOR::SEQUENCE-BARRIER-SEQUENCER)
  CL-DISRUPTOR::SEQUENCE-BARRIER-SEQUENCER
@@ -387,6 +515,7 @@ These functions were not called:
  CL-DISRUPTOR::SEQUENCER-WAIT-STRATEGY
  CL-DISRUPTOR::SINGLE-PRODUCER-SEQUENCER-NEXT
  CL-DISRUPTOR::SINGLE-PRODUCER-SEQUENCER-PUBLISH
+ CL-DISRUPTOR::SINGLE-PRODUCER-SEQUENCER-PUBLISH-LOW-HIGH
  CL-DISRUPTOR::SLEEPING-WAIT-STRATEGY-SIGNAL-ALL-WHEN-BLOCKING
  CL-DISRUPTOR::SLEEPING-WAIT-STRATEGY-WAIT-FOR
  CL-DISRUPTOR::TIMEOUT-BLOCKING-WAIT-STRATEGY-SIGNAL-ALL-WHEN-BLOCKING
@@ -397,16 +526,16 @@ These functions were not called:
 
 profiling :multi-producer-sequencer
 Evaluation took:
-  0.755 seconds of real time
-  2.812686 seconds of total run time (2.667743 user, 0.144943 system)
-  372.58% CPU
-  1,657,355,106 processor cycles
+  0.757 seconds of real time
+  2.744966 seconds of total run time (2.576920 user, 0.168046 system)
+  362.62% CPU
+  1,660,823,344 processor cycles
   128 bytes consed
 
   seconds  |     gc     |   consed  |  calls  |  sec/call  |  name
 ---------------------------------------------------------
-     1.395 |      0.000 |        64 |       1 |   1.395418 | CL-DISRUPTOR:RUN
-     1.135 |      0.000 |        32 | 141,258 |   0.000008 | CL-DISRUPTOR::YIELDING-WAIT-STRATEGY-WAIT-FOR
+     1.229 |      0.000 |        64 | 192,662 |   0.000006 | CL-DISRUPTOR::YIELDING-WAIT-STRATEGY-WAIT-FOR
+     1.134 |      0.000 |        32 |       1 |   1.133621 | CL-DISRUPTOR:RUN
      0.004 |      0.000 | 2,621,456 |       1 |   0.003999 | CL-DISRUPTOR:MAKE-RING-BUFFER
      0.000 |      0.000 |         0 |       1 |   0.000000 | CL-DISRUPTOR:SEQUENCER-NEW-BARRIER
      0.000 |      0.000 |   524,304 |       1 |   0.000000 | CL-DISRUPTOR:MAKE-SEQUENCER
@@ -416,11 +545,11 @@ Evaluation took:
      0.000 |      0.000 |         0 |       1 |   0.000000 | CL-DISRUPTOR::MAKE-SEQUENCE-BARRIER
      0.000 |      0.000 |         0 |       2 |   0.000000 | CL-DISRUPTOR::MAKE-SEQUENCE-NUMBER
 ---------------------------------------------------------
-     2.534 |      0.000 | 3,145,856 | 141,268 |            | Total
+     2.366 |      0.000 | 3,145,856 | 192,672 |            | Total
 
-estimated total profiling overhead: 0.28 seconds
+estimated total profiling overhead: 0.38 seconds
 overhead estimation parameters:
-  8.000001e-9s/call, 2.002e-6s total profiling, 9.36e-7s internal profiling
+  8.000001e-9s/call, 1.9860001e-6s total profiling, 9.2e-7s internal profiling
 
 These functions were not called:
  CL-DISRUPTOR::BATCH-EVENT-PROCESSOR-DATA-PROVIDER
@@ -474,8 +603,8 @@ These functions were not called:
  (SETF CL-DISRUPTOR::SEQUENCE-BARRIER-ALERTED)
  CL-DISRUPTOR::SEQUENCE-BARRIER-CURSOR-SEQUENCE-NUMBER
  (SETF CL-DISRUPTOR::SEQUENCE-BARRIER-CURSOR-SEQUENCE-NUMBER)
- CL-DISRUPTOR::SEQUENCE-BARRIER-DEPENDENT-SEQUENCE-NUMBER
- (SETF CL-DISRUPTOR::SEQUENCE-BARRIER-DEPENDENT-SEQUENCE-NUMBER)
+ CL-DISRUPTOR::SEQUENCE-BARRIER-DEPENDENT-SEQUENCE-NUMBERS
+ (SETF CL-DISRUPTOR::SEQUENCE-BARRIER-DEPENDENT-SEQUENCE-NUMBERS)
  CL-DISRUPTOR::SEQUENCE-BARRIER-P CL-DISRUPTOR::SEQUENCE-BARRIER-SEQUENCER
  (SETF CL-DISRUPTOR::SEQUENCE-BARRIER-SEQUENCER)
  CL-DISRUPTOR::SEQUENCE-BARRIER-WAIT-STRATEGY
@@ -526,6 +655,7 @@ These functions were not called:
  (SETF CL-DISRUPTOR::SEQUENCER-WAIT-STRATEGY)
  CL-DISRUPTOR::SINGLE-PRODUCER-SEQUENCER-NEXT
  CL-DISRUPTOR::SINGLE-PRODUCER-SEQUENCER-PUBLISH
+ CL-DISRUPTOR::SINGLE-PRODUCER-SEQUENCER-PUBLISH-LOW-HIGH
  CL-DISRUPTOR::SLEEPING-WAIT-STRATEGY-SIGNAL-ALL-WHEN-BLOCKING
  CL-DISRUPTOR::SLEEPING-WAIT-STRATEGY-WAIT-FOR
  CL-DISRUPTOR::TIMEOUT-BLOCKING-WAIT-STRATEGY-SIGNAL-ALL-WHEN-BLOCKING

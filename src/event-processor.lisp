@@ -33,8 +33,7 @@
                                                     next-sequence-number
                                                     (sequence-barrier-cursor-sequence-number
                                                      sequence-barrier)
-                                                    ;; FIXME might be a list
-                                                    (sequence-barrier-dependent-sequence-number
+                                                    (sequence-barrier-dependent-sequence-numbers
                                                      sequence-barrier)
                                                     sequence-barrier
                                                     :retries retries

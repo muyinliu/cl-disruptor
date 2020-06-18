@@ -1,5 +1,8 @@
 (in-package :cl-disruptor-test)
 
+(declaim (optimize (speed 3) (safety 0) (debug 0)))
+
+(declaim (inline padded-fixnum-value))
 (defstruct padded-fixnum
   (pad1 0 :type fixnum)
   (pad2 0 :type fixnum)
@@ -29,12 +32,14 @@
                              disruptor:+sleeping-wait-strategy-default-sleep-second+)
                             (timeout-second 0.000000001d0) ;; 1ns
                             (buffer-size (* 1024 64))
-                            (iterations (* 1000 1000 100)))
+                            (iterations (* 1000 1000 100))
+                            (batch-size 1))
   (when (and (eq sequencer-type :single-producer-sequencer)
              (not (eq producer-count 1)))
     (error "use :single-producer-sequencer can only have 1 producer"))
   `(let ((result (make-padded-fixnum :value 0))
          (end-sequence-number 0))
+     (declare (type fixnum end-sequence-number))
      (disruptor:with-disruptor (ring-buffer
                                 'value-event
                                 #'(lambda ()
@@ -42,6 +47,7 @@
                                 #'(lambda (event
                                            next-sequence-number
                                            end-of-batch-p)
+                                    (declare (optimize (speed 3) (safety 0) (debug 0)))
                                     (declare (ignore end-of-batch-p))
                                     (declare (type fixnum next-sequence-number)
                                              (type value-event event))
@@ -59,33 +65,69 @@
                                 :sleep-second ,sleep-second
                                 :timeout-second ,timeout-second)
        (setf (padded-fixnum-value result) 0
-             end-sequence-number (1- (* ,iterations ,producer-count)))
+             end-sequence-number (the fixnum
+                                      (1- (the fixnum (* ,iterations ,producer-count)))))
        (time
         (loop for producer-thread in
              (loop repeat ,producer-count
                 collect
-                  (bt:make-thread
+                  (bt:make-thread ;; producer thread
                    #'(lambda ()
-                       (loop
-                          with ring-buffer-sequencer = (disruptor:ring-buffer-sequencer
-                                                        ring-buffer)
-                          for i from 0 below ,iterations
-                          do (let ((next-sequence-number (funcall (disruptor:sequencer-next
-                                                                   ,sequencer-type)
-                                                                  ring-buffer-sequencer)))
-                               (declare (type fixnum next-sequence-number))
-                               (setf (value-event-value (disruptor:get-event
-                                                         ring-buffer
-                                                         next-sequence-number))
-                                     i)
-                               (funcall (disruptor:sequencer-publish ,sequencer-type)
-                                        ring-buffer-sequencer
-                                        next-sequence-number
-                                        (disruptor:wait-strategy-signal-all-when-blocking
-                                         ,wait-strategy-type)
-                                        :lock lock
-                                        :condition-variable condition-variable
-                                        :signal-needed signal-needed))))))
+                       (if (> ,batch-size 1)
+                           ;; batch enabled
+                           (loop
+                              with ring-buffer-sequencer = (disruptor:ring-buffer-sequencer
+                                                            ring-buffer)
+                              for i from 0 below ,iterations by ,batch-size
+                              do (let* ((high-sequence-number (funcall (disruptor:sequencer-next
+                                                                        ,sequencer-type)
+                                                                       ring-buffer-sequencer
+                                                                       :n ,batch-size))
+                                        (low-sequence-number (the fixnum
+                                                                  (1+ (- high-sequence-number
+                                                                         ,batch-size)))))
+                                   (declare (type fixnum
+                                                  high-sequence-number
+                                                  low-sequence-number))
+                                   (loop
+                                      for sequence-number fixnum
+                                      from low-sequence-number to high-sequence-number
+                                      and j fixnum from i below (the fixnum (+ i ,batch-size))
+                                      do (setf (value-event-value (disruptor:get-event
+                                                                   ring-buffer
+                                                                   sequence-number))
+                                               j))
+                                   (funcall (disruptor:sequencer-publish-low-high
+                                             ,sequencer-type)
+                                            ring-buffer-sequencer
+                                            low-sequence-number
+                                            high-sequence-number
+                                            (disruptor:wait-strategy-signal-all-when-blocking
+                                             ,wait-strategy-type)
+                                            :lock lock
+                                            :condition-variable condition-variable
+                                            :signal-needed signal-needed)))
+                           ;; without batch enabled
+                           (loop
+                              with ring-buffer-sequencer = (disruptor:ring-buffer-sequencer
+                                                            ring-buffer)
+                              for i from 0 below ,iterations
+                              do (let ((next-sequence-number (funcall (disruptor:sequencer-next
+                                                                       ,sequencer-type)
+                                                                      ring-buffer-sequencer)))
+                                   (declare (type fixnum next-sequence-number))
+                                   (setf (value-event-value (disruptor:get-event
+                                                             ring-buffer
+                                                             next-sequence-number))
+                                         i)
+                                   (funcall (disruptor:sequencer-publish ,sequencer-type)
+                                            ring-buffer-sequencer
+                                            next-sequence-number
+                                            (disruptor:wait-strategy-signal-all-when-blocking
+                                             ,wait-strategy-type)
+                                            :lock lock
+                                            :condition-variable condition-variable
+                                            :signal-needed signal-needed)))))))
            do (bt:join-thread producer-thread)
            finally (bt:join-thread event-processor-thread)))
        (padded-fixnum-value result))))

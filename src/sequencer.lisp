@@ -65,7 +65,7 @@
             (> n (sequencer-buffer-size sequencer)))
     (error "valid range of n: 1 < n < ~A" (sequencer-buffer-size sequencer)))
   (let* ((next-value (sequencer-next-value sequencer))
-         (next-sequence-number (+ next-value n))
+         (next-sequence-number (the fixnum (+ next-value n)))
          (wrap-point (- next-sequence-number (sequencer-buffer-size sequencer)))
          (cached-gating-sequence-number (sequencer-cached-value sequencer)))
     (declare (type fixnum
@@ -117,6 +117,27 @@
            :condition-variable condition-variable
            :signal-needed signal-needed))
 
+(declaim (inline single-producer-sequencer-publish-low-high))
+(defun single-producer-sequencer-publish-low-high (sequencer
+                                                   low-sequence-number
+                                                   high-sequence-number
+                                                   signal-all-when-blocking-function
+                                                   &key
+                                                     lock
+                                                     condition-variable
+                                                     signal-needed)
+  (declare (optimize (speed 3) (safety 0) (debug 0)))
+  (declare (type sequencer sequencer)
+           (type fixnum low-sequence-number high-sequence-number)
+           (type function signal-all-when-blocking-function)
+           (ignore low-sequence-number))
+  ;; Sequence UNSAFE.putOrderedLong(this, VALUE_OFFSET, value);
+  (setf (sequence-number-value (sequencer-cursor sequencer)) high-sequence-number)
+  (funcall signal-all-when-blocking-function
+           :lock lock
+           :condition-variable condition-variable
+           :signal-needed signal-needed))
+
 ;; multi-producer sequencer
 
 (declaim (inline multi-producer-sequencer-next))
@@ -129,7 +150,7 @@
     (error "valid range of n: 1 < n < ~A" (sequencer-buffer-size sequencer)))
   (loop
      do (let* ((current (sequence-number-value (sequencer-cursor sequencer)))
-               (next-sequence-number (+ current n))
+               (next-sequence-number (the fixnum (+ current n)))
                (wrap-point (the fixnum
                                 (- next-sequence-number
                                    (the fixnum (sequencer-buffer-size sequencer)))))
@@ -254,20 +275,25 @@
                 (the fixnum (- sequence-number 1))))
          finally (return available-sequence-number))))
 
-(defun sequencer-new-barrier (sequencer &key dependent-sequences)
+(defun sequencer-new-barrier (sequencer &key dependent-sequence-numbers)
   (declare (optimize (speed 3) (safety 0) (debug 0)))
   (make-sequence-barrier :sequencer sequencer
                          :wait-strategy (sequencer-wait-strategy sequencer) ;; TODO useless??
                          :cursor-sequence-number (sequencer-cursor sequencer)
-                         :dependent-sequence-number (or dependent-sequences
-                                                        (list (sequencer-cursor sequencer)))))
+                         :dependent-sequence-numbers (or dependent-sequence-numbers
+                                                         (list (sequencer-cursor sequencer)))))
 
-(defmacro sequencer-next (sequencer)
-  (case sequencer
+(defmacro sequencer-next (sequencer-type)
+  (case sequencer-type
     (:single-producer-sequencer '#'single-producer-sequencer-next)
     (:multi-producer-sequencer '#'multi-producer-sequencer-next)))
 
-(defmacro sequencer-publish (sequencer)
-  (case sequencer
+(defmacro sequencer-publish (sequencer-type)
+  (case sequencer-type
     (:single-producer-sequencer '#'single-producer-sequencer-publish)
     (:multi-producer-sequencer '#'multi-producer-sequencer-publish)))
+
+(defmacro sequencer-publish-low-high (sequencer-type)
+  (case sequencer-type
+    (:single-producer-sequencer '#'single-producer-sequencer-publish-low-high)
+    (:multi-producer-sequencer '#'multi-producer-sequencer-publish-low-high)))
