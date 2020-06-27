@@ -192,7 +192,7 @@
          (expect-result (* producer-count (loop for i from 0 below iterations
                                              sum i)))
          (batch-size 10))
-    (subtest "test disruptor with different wait strategies"
+    (subtest "test disruptor with batch enabled"
       (subtest (format nil
                        "test disruptor with yielding-wait-strategy, iterations: ~A, producer-count: ~A, batch-size: ~A"
                        iterations

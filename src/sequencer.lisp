@@ -214,8 +214,9 @@
   (let* ((index (caculate-index sequence-number (sequencer-index-mask sequencer)))
          (expected-flag (caculate-availability-flag sequence-number
                                                     (sequencer-index-shift sequencer)))
-         (flag (with-memory-barrier
-                 (svref (sequencer-available-buffer sequencer) index))))
+         ;; UNSAFE.getIntVolatile(availableBuffer, bufferAddress)
+         ;;  Note: UNSAFE.getIntVolatile do NOT require memory barrier
+         (flag (svref (sequencer-available-buffer sequencer) index)))
     (declare (type fixnum expected-flag flag))
     (= flag expected-flag)))
 
