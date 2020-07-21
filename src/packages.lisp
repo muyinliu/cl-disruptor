@@ -25,10 +25,7 @@
    #:batch-event-processor ; type
    #:make-batch-event-processor
    #:batch-event-processor-sequence
-   #:run
    ;; wait-strategy
-   #:wait-strategy-wait-for
-   #:wait-strategy-signal-all-when-blocking
    #:+yielding-wait-strategy-spin-tries+
    #:+sleeping-wait-strategy-default-tries+
    #:+sleeping-wait-strategy-default-tries+

@@ -24,19 +24,19 @@
   (value 0 :type fixnum))
 
 (defmacro test-disruptor (&key
-                            (wait-strategy-type :yielding-wait-strategy)
                             (sequencer-type :single-producer-sequencer)
+                            (wait-strategy-type :yielding-wait-strategy)
+                            (iterations (* 1000 1000 100))
+                            (batch-size 1)
+                            (buffer-size (* 1024 64))
                             (producer-count 1)
                             (retries disruptor:+sleeping-wait-strategy-default-tries+)
                             (sleep-second
                              disruptor:+sleeping-wait-strategy-default-sleep-second+)
-                            (timeout-second 0.000000001d0) ;; 1ns
-                            (buffer-size (* 1024 64))
-                            (iterations (* 1000 1000 100))
-                            (batch-size 1))
+                            (timeout-second 0.000000001d0)) ;; 1ns
   (when (and (eq sequencer-type :single-producer-sequencer)
              (not (eq producer-count 1)))
-    (error "use :single-producer-sequencer can only have 1 producer"))
+    (error ":producer-count must be 1 when :sequencer-type is :single-producer-sequencer"))
   `(let ((result (make-padded-fixnum :value 0))
          (end-sequence-number 0))
      (declare (type fixnum end-sequence-number))
@@ -57,10 +57,13 @@
                                                   (value-event-value event))))
                                     (= end-sequence-number
                                        next-sequence-number))
-                                lock condition-variable signal-needed event-processor-thread
-                                :sequencer-type ,sequencer-type
                                 :buffer-size ,buffer-size
+                                :sequencer-type ,sequencer-type
                                 :wait-strategy-type ,wait-strategy-type
+                                :event-processor-thread-symbol event-processor-thread
+                                :lock-symbol lock
+                                :condition-variable-symbol condition-variable
+                                :signal-needed-symbol signal-needed
                                 :retries ,retries
                                 :sleep-second ,sleep-second
                                 :timeout-second ,timeout-second)
@@ -74,7 +77,7 @@
                   (bt:make-thread ;; producer thread
                    #'(lambda ()
                        (if (> ,batch-size 1)
-                           ;; batch enabled
+                           ;; with batch enabled
                            (loop
                               with ring-buffer-sequencer = (disruptor:ring-buffer-sequencer
                                                             ring-buffer)
@@ -102,7 +105,7 @@
                                             ring-buffer-sequencer
                                             low-sequence-number
                                             high-sequence-number
-                                            (disruptor:wait-strategy-signal-all-when-blocking
+                                            (disruptor::wait-strategy-signal-all-when-blocking
                                              ,wait-strategy-type)
                                             :lock lock
                                             :condition-variable condition-variable
@@ -123,7 +126,7 @@
                                    (funcall (disruptor:sequencer-publish ,sequencer-type)
                                             ring-buffer-sequencer
                                             next-sequence-number
-                                            (disruptor:wait-strategy-signal-all-when-blocking
+                                            (disruptor::wait-strategy-signal-all-when-blocking
                                              ,wait-strategy-type)
                                             :lock lock
                                             :condition-variable condition-variable

@@ -666,6 +666,40 @@ These functions were not called:
 ## TODO
 
 - handy macro for create disruptor
+- simplify `disruptor:sequencer-publish`:
+    ```lisp
+    ;; producer, user code
+    (funcall (disruptor:sequencer-publish producer-type)
+             (disruptor:ring-buffer-sequencer ring-buffer)
+             next-sequence-number
+             (disruptor::wait-strategy-signal-all-when-blocking :yielding-wait-strategy)
+             :lock nil
+             :condition-variable nil
+             :signal-needed nil)
+      ;; sequencer.lisp
+      (single-producer-sequencer-publish sequencer
+                                         sequence-number
+                                         (disruptor::wait-strategy-signal-all-when-blocking
+                                          :yielding-wait-strategy)
+                                         :lock nil
+                                         :condition-variable nil
+                                         :signal-needed nil)
+        (setf (sequence-number-value (sequencer-cursor sequencer)) sequence-number)
+        (funcall (disruptor:wait-strategy-signal-all-when-blocking
+                  :yielding-wait-strategy)
+                 :lock nil
+                 :condition-variable condition-variable
+                 :signal-needed nil)
+          ;; wait-strategy.lisp
+          ;; do nothing
+    ```
+    
+    two way to simplify user code about `publish`
+    
+    1. add field `lock` `condition-variable` `signal-needed` to `sequencer`
+    2. add field `lock` `condition-variable` `signal-needed` to `ring-buffer`
+    
+    Note: variables `lock` `condition-variable` `signal-needed` are required by wait-strategies' functions `<wait-strategy>-signal-all-when-blocking` and `<wait-strategy>-wait-for`
 
 -----------------------------------------------------------------
 ## license of cl-disruptor

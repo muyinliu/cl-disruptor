@@ -1,19 +1,17 @@
 (in-package :disruptor)
 
-(defstruct disruptor
-  (ring-buffer nil :type ring-buffer))
-
-;; TODO test required
 (defmacro with-disruptor ((ring-buffer-symbol
                            event-type event-generator event-handler
-                           lock-symbol
-                           condition-variable-symbol
-                           signal-needed-symbol
-                           event-processor-thread-symbol
                            &key
-                           (sequencer-type :single-producer-sequencer)
                            (buffer-size (* 1024 256))
+                           (sequencer-type :single-producer-sequencer)
                            (wait-strategy-type :yielding-wait-strategy)
+                           ;; TODO support multiple processor(1 to 3 diamond)
+                           (event-processor-thread-symbol (gensym "event-processor-thread"))
+                           (event-processor-thread-name "event-processor-thread")
+                           (lock-symbol (gensym "lock"))
+                           (condition-variable-symbol (gensym "condition-variable"))
+                           (signal-needed-symbol (gensym "signal-needed"))
                            (retries +sleeping-wait-strategy-default-tries+)
                            (sleep-second +sleeping-wait-strategy-default-sleep-second+)
                            (timeout-second 0.000000001))
@@ -70,5 +68,6 @@
                                        :lock ,lock-symbol
                                        :condition-variable ,condition-variable-symbol
                                        :signal-needed ,signal-needed-symbol
-                                       :timeout-second ,timeout-second-symbol)))))
+                                       :timeout-second ,timeout-second-symbol))
+                              :name ,event-processor-thread-name)))
          ,@body))))
