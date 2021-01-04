@@ -41,7 +41,6 @@
          (end-sequence-number 0))
      (declare (type fixnum end-sequence-number))
      (disruptor:with-disruptor (ring-buffer
-                                'value-event
                                 #'(lambda ()
                                     (make-value-event))
                                 #'(lambda (event

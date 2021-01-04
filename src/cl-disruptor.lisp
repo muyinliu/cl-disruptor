@@ -1,7 +1,7 @@
 (in-package :disruptor)
 
 (defmacro with-disruptor ((ring-buffer-symbol
-                           event-type event-generator event-handler
+                           event-generator event-handler
                            &key
                            (buffer-size (* 1024 256))
                            (sequencer-type :single-producer-sequencer)
@@ -28,7 +28,6 @@
                                                            :buffer-size ,buffer-size-symbol))
             (,ring-buffer-symbol (make-ring-buffer :buffer-size ,buffer-size-symbol
                                                    :sequencer ,ring-buffer-sequencer-symbol
-                                                   :event-type ,event-type
                                                    :event-generator ,event-generator))
             (,sequence-barrier-symbol (ring-buffer-new-barrier ,ring-buffer-symbol))
             (,lock-symbol ,(when (member wait-strategy-type

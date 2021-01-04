@@ -4,12 +4,12 @@
 
 (defstruct (ring-buffer
              (:constructor make-ring-buffer (&key
-                                             buffer-size sequencer event-type event-generator
+                                             buffer-size sequencer event-generator
                                              &aux
                                              (index-mask (- buffer-size 1))
                                              (entries (make-array
                                                        buffer-size
-                                                       :element-type event-type
+                                                       :element-type t
                                                        :initial-contents
                                                        (loop for i from 0 below buffer-size
                                                           collect (funcall event-generator)))))))
