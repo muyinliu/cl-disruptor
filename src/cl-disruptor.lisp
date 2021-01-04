@@ -9,9 +9,6 @@
                            ;; TODO support multiple processor(1 to 3 diamond)
                            (event-processor-thread-symbol (gensym "event-processor-thread"))
                            (event-processor-thread-name "event-processor-thread")
-                           (lock-symbol (gensym "lock"))
-                           (condition-variable-symbol (gensym "condition-variable"))
-                           (signal-needed-symbol (gensym "signal-needed"))
                            (retries +sleeping-wait-strategy-default-tries+)
                            (sleep-second +sleeping-wait-strategy-default-sleep-second+)
                            (timeout-second 0.000000001))
@@ -19,6 +16,9 @@
   (let ((buffer-size-symbol (gensym "buffer-size"))
         (event-handler-symbol (gensym "event-handler"))
         (ring-buffer-sequencer-symbol (gensym "ring-buffer-sequencer"))
+        (lock-symbol (gensym "lock"))
+        (condition-variable-symbol (gensym "condition-variable"))
+        (signal-needed-symbol (gensym "signal-needed"))
         (sequence-barrier-symbol (gensym "sequence-barrier"))
         (timeout-second-symbol (gensym "timeout-second"))
         (batch-event-processor-symbol (gensym "batch-event-processor")))
@@ -26,27 +26,14 @@
             (,event-handler-symbol ,event-handler)
             (,ring-buffer-sequencer-symbol (make-sequencer :type ,sequencer-type
                                                            :buffer-size ,buffer-size-symbol))
+            (,lock-symbol (sequencer-lock ,ring-buffer-sequencer-symbol))
+            (,condition-variable-symbol (sequencer-condition-variable
+                                         ,ring-buffer-sequencer-symbol))
+            (,signal-needed-symbol (sequencer-signal-needed ,ring-buffer-sequencer-symbol))
             (,ring-buffer-symbol (make-ring-buffer :buffer-size ,buffer-size-symbol
                                                    :sequencer ,ring-buffer-sequencer-symbol
                                                    :event-generator ,event-generator))
             (,sequence-barrier-symbol (ring-buffer-new-barrier ,ring-buffer-symbol))
-            (,lock-symbol ,(when (member wait-strategy-type
-                                         '(:blocking-wait-strategy
-                                           :lite-blocking-wait-strategy
-                                           :timeout-blocking-wait-strategy
-                                           :lite-timeout-blocking-wait-strategy))
-                             `(bt:make-lock "wait-strategy-mutex")))
-            (,condition-variable-symbol ,(when (member wait-strategy-type
-                                                       '(:blocking-wait-strategy
-                                                         :lite-blocking-wait-strategy
-                                                         :timeout-blocking-wait-strategy
-                                                         :lite-timeout-blocking-wait-strategy))
-                                           `(bt:make-condition-variable
-                                             :name "wait-strategy-condition-variable")))
-            (,signal-needed-symbol ,(when (member wait-strategy-type
-                                                  '(:lite-blocking-wait-strategy
-                                                    :lite-timeout-blocking-wait-strategy))
-                                      `(atomic:make-atomic-boolean :value nil)))
             (,timeout-second-symbol ,(when (member wait-strategy-type
                                                    '(:timeout-blocking-wait-strategy
                                                      :lite-timeout-blocking-wait-strategy))

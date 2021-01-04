@@ -60,9 +60,6 @@
                                 :sequencer-type ,sequencer-type
                                 :wait-strategy-type ,wait-strategy-type
                                 :event-processor-thread-symbol event-processor-thread
-                                :lock-symbol lock
-                                :condition-variable-symbol condition-variable
-                                :signal-needed-symbol signal-needed
                                 :retries ,retries
                                 :sleep-second ,sleep-second
                                 :timeout-second ,timeout-second)
@@ -105,10 +102,7 @@
                                             low-sequence-number
                                             high-sequence-number
                                             (disruptor::wait-strategy-signal-all-when-blocking
-                                             ,wait-strategy-type)
-                                            :lock lock
-                                            :condition-variable condition-variable
-                                            :signal-needed signal-needed)))
+                                             ,wait-strategy-type))))
                            ;; without batch enabled
                            (loop
                               with ring-buffer-sequencer = (disruptor:ring-buffer-sequencer
@@ -126,10 +120,7 @@
                                             ring-buffer-sequencer
                                             next-sequence-number
                                             (disruptor::wait-strategy-signal-all-when-blocking
-                                             ,wait-strategy-type)
-                                            :lock lock
-                                            :condition-variable condition-variable
-                                            :signal-needed signal-needed)))))))
+                                             ,wait-strategy-type))))))))
            do (bt:join-thread producer-thread)
            finally (bt:join-thread event-processor-thread)))
        (padded-fixnum-value result))))

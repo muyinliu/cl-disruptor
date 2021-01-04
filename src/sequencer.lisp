@@ -5,6 +5,8 @@
 (defconstant +sequencer-initial-cursor-value+ -1)
 (declaim (type fixnum +sequencer-initial-cursor-value+))
 
+(declaim (inline sequencer-lock sequencer-condition-variable sequencer-signal-needed))
+
 (defstruct (sequencer
              (:constructor make-sequencer (&key
                                            type
@@ -38,6 +40,10 @@
   (cached-value +sequencer-initial-cursor-value+ :type fixnum)
   (index-mask 0 :type fixnum)
   (index-shift 0 :type fixnum)
+  (lock (bt:make-lock "wait-strategy-mutex") :type t)
+  (condition-variable (bt:make-condition-variable :name "wait-strategy-condition-variable")
+                      :type t)
+  (signal-needed (atomic:make-atomic-boolean :value nil))
   (pad8 0 :type fixnum)
   (pad9 0 :type fixnum)
   (pad10 0 :type fixnum)
@@ -101,11 +107,7 @@
 (declaim (inline single-producer-sequencer-publish))
 (defun single-producer-sequencer-publish (sequencer
                                           sequence-number
-                                          signal-all-when-blocking-function
-                                          &key
-                                            lock
-                                            condition-variable
-                                            signal-needed)
+                                          signal-all-when-blocking-function)
   (declare (optimize (speed 3) (safety 0) (debug 0)))
   (declare (type sequencer sequencer)
            (type fixnum sequence-number)
@@ -113,19 +115,15 @@
   ;; Sequence UNSAFE.putOrderedLong(this, VALUE_OFFSET, value);
   (setf (sequence-number-value (sequencer-cursor sequencer)) sequence-number)
   (funcall signal-all-when-blocking-function
-           :lock lock
-           :condition-variable condition-variable
-           :signal-needed signal-needed))
+           :lock (sequencer-lock sequencer)
+           :condition-variable (sequencer-condition-variable sequencer)
+           :signal-needed (sequencer-signal-needed sequencer)))
 
 (declaim (inline single-producer-sequencer-publish-low-high))
 (defun single-producer-sequencer-publish-low-high (sequencer
                                                    low-sequence-number
                                                    high-sequence-number
-                                                   signal-all-when-blocking-function
-                                                   &key
-                                                     lock
-                                                     condition-variable
-                                                     signal-needed)
+                                                   signal-all-when-blocking-function)
   (declare (optimize (speed 3) (safety 0) (debug 0)))
   (declare (type sequencer sequencer)
            (type fixnum low-sequence-number high-sequence-number)
@@ -134,9 +132,9 @@
   ;; Sequence UNSAFE.putOrderedLong(this, VALUE_OFFSET, value);
   (setf (sequence-number-value (sequencer-cursor sequencer)) high-sequence-number)
   (funcall signal-all-when-blocking-function
-           :lock lock
-           :condition-variable condition-variable
-           :signal-needed signal-needed))
+           :lock (sequencer-lock sequencer)
+           :condition-variable (sequencer-condition-variable sequencer)
+           :signal-needed (sequencer-signal-needed sequencer)))
 
 ;; multi-producer sequencer
 
@@ -223,31 +221,23 @@
 (declaim (inline multi-producer-sequencer-publish))
 (defun multi-producer-sequencer-publish (sequencer
                                          sequence-number
-                                         signal-all-when-blocking-function
-                                         &key
-                                           lock
-                                           condition-variable
-                                           signal-needed)
+                                         signal-all-when-blocking-function)
   (declare (optimize (speed 3) (safety 0) (debug 0)))
   (declare (type sequencer sequencer)
            (type fixnum sequence-number)
            (type function signal-all-when-blocking-function))
   (multi-producer-sequencer-set-available sequencer sequence-number) 
   (funcall signal-all-when-blocking-function
-           :lock lock
-           :condition-variable condition-variable
-           :signal-needed signal-needed))
+           :lock (sequencer-lock sequencer)
+           :condition-variable (sequencer-condition-variable sequencer)
+           :signal-needed (sequencer-signal-needed sequencer)))
 
 ;; TODO should test
 (declaim (inline multi-producer-sequencer-publish-low-high))
 (defun multi-producer-sequencer-publish-low-high (sequencer
                                                   low-sequence-number
                                                   high-sequence-number
-                                                  signal-all-when-blocking-function
-                                                  &key
-                                                    lock
-                                                    condition-variable
-                                                    signal-needed)
+                                                  signal-all-when-blocking-function)
   (declare (optimize (speed 3) (safety 0) (debug 0)))
   (declare (type sequencer sequencer)
            (type fixnum low-sequence-number high-sequence-number)
@@ -255,9 +245,9 @@
   (loop for sequence-number from low-sequence-number to high-sequence-number
      do (multi-producer-sequencer-set-available sequencer sequence-number))
   (funcall signal-all-when-blocking-function
-           :lock lock
-           :condition-variable condition-variable
-           :signal-needed signal-needed))
+           :lock (sequencer-lock sequencer)
+           :condition-variable (sequencer-condition-variable sequencer)
+           :signal-needed (sequencer-signal-needed sequencer)))
 
 (declaim (inline sequencer-get-highest-published-sequence))
 (defun sequencer-get-highest-published-sequence (sequencer
