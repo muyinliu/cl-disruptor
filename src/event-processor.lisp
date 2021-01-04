@@ -24,10 +24,12 @@
                                       (sequence-number-value
                                        (batch-event-processor-sequence event-processor)))))
         (event-handler (batch-event-processor-event-handler event-processor))
-        (sequence-barrier (batch-event-processor-sequence-barrier event-processor)))
+        (sequence-barrier (batch-event-processor-sequence-barrier event-processor))
+        (ring-buffer (batch-event-processor-data-provider event-processor)))
     (declare (type fixnum next-sequence-number)
              (type function event-handler)
-             (type sequence-barrier sequence-barrier))
+             (type sequence-barrier sequence-barrier)
+             (type ring-buffer ring-buffer))
     (loop
        do (let ((available-sequence-number (funcall wait-for-function
                                                     next-sequence-number
@@ -50,8 +52,7 @@
                     ;; TODO should ignore handle-result
                     (let ((handle-result (funcall
                                           event-handler
-                                          (get-event (batch-event-processor-data-provider
-                                                      event-processor)
+                                          (get-event ring-buffer
                                                      next-sequence-number)
                                           next-sequence-number
                                           (= next-sequence-number
