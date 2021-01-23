@@ -13,14 +13,16 @@ Note: [LMAX Disruptor](https://github.com/LMAX-Exchange/disruptor) is written in
 - `bordeaux-threads` v0.8.8+ (IMPORTANT NOT: commit `aa1bf8e2` fix `bt:condition-wait` for SBCL: Re-acquire lock if CONDITION-WAIT times out)
 
 -----------------------------------------------------------------
-## Install
+## Installation
 
 ```shell
 cp -r cl-disruptor ~/quicklisp/local-projects/cl-disruptor
 ```
 
 -----------------------------------------------------------------
-## Useage ;; TODO
+## Useage
+
+### Load `cl-disruptor`
 
 ```lisp
 (ql:quickload 'cl-disruptor)
@@ -33,6 +35,79 @@ To load "cl-disruptor":
 ; Loading "cl-disruptor"
 ......
 (CL-DISRUPTOR)
+```
+
+### Demo
+
+```lisp
+(declaim (inline padded-fixnum-value))
+(defstruct padded-fixnum
+  (pad1 0 :type fixnum)
+  (pad2 0 :type fixnum)
+  (pad3 0 :type fixnum)
+  (pad4 0 :type fixnum)
+  (pad5 0 :type fixnum)
+  (pad6 0 :type fixnum)
+  (pad7 0 :type fixnum)
+  (value 0 :type fixnum)
+  (pad8 0 :type fixnum)
+  (pad9 0 :type fixnum)
+  (pad10 0 :type fixnum)
+  (pad11 0 :type fixnum)
+  (pad12 0 :type fixnum)
+  (pad13 0 :type fixnum)
+  (pad14 0 :type fixnum))
+
+(declaim (inline value-event))
+(defstruct value-event
+  (value 0 :type fixnum))
+
+(let ((end-sequence-number (1- 100000000))
+      (result (make-padded-fixnum)))
+  (disruptor:with-disruptor (ring-buffer
+                             ;; event-generator
+                             #'(lambda ()
+                                 (make-value-event))
+                             ;; event-handler(consumer, return T stop thread of event-processor)
+                             #'(lambda (event
+                                        next-sequence-number
+                                        end-of-batch-p)
+                                 (declare (optimize (speed 3) (safety 0) (debug 0)))
+                                 (declare (ignore end-of-batch-p))
+                                 (declare (type fixnum next-sequence-number)
+                                          (type value-event event))
+                                 (setf (padded-fixnum-value result)
+                                       (the fixnum
+                                            (+ (padded-fixnum-value result)
+                                               (value-event-value event))))
+                                 ;; return T to stop event-processor
+                                 (= end-sequence-number
+                                    next-sequence-number))
+                             :buffer-size (* 1024 64)
+                             :sequencer-type :single-producer-sequencer
+                             :wait-strategy-type :yielding-wait-strategy
+                             :event-processor-thread-symbol event-processor-thread)
+    ;; producer
+    (loop
+       with ring-buffer-sequencer = (disruptor:ring-buffer-sequencer ring-buffer)
+       for i fixnum from 0 to end-sequence-number
+       do (let ((next-sequence-number (funcall (disruptor:sequencer-next
+                                                :single-producer-sequencer)
+                                               ring-buffer-sequencer)))
+            (declare (type fixnum next-sequence-number))
+            ;; update value in ring-buffer
+            (setf (value-event-value (disruptor:get-event
+                                      ring-buffer
+                                      next-sequence-number))
+                  i)
+            ;; publish new value
+            (funcall (disruptor:sequencer-publish :single-producer-sequencer)
+                     ring-buffer-sequencer
+                     next-sequence-number
+                     (disruptor::wait-strategy-signal-all-when-blocking
+                      :yielding-wait-strategy))))
+    ;; wait for event-processor handle all events
+    (bt:join-thread event-processor-thread)))
 ```
 
 ### sequencer
