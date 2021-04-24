@@ -225,7 +225,7 @@ sbcl --noinform --eval "(asdf:test-system 'cl-disruptor)" --quit
 
 OR in Common Lisp:
 
-```shell
+```lisp
 (asdf:test-system 'cl-disruptor)
 ```
 =>
