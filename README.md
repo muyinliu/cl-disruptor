@@ -39,6 +39,8 @@ To load "cl-disruptor":
 
 ### Demo
 
+#### single-producer-sequencer without batch
+
 ```lisp
 (declaim (inline padded-fixnum-value))
 (defstruct padded-fixnum
