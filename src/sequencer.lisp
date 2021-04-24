@@ -274,17 +274,44 @@
                          :dependent-sequence-numbers (or dependent-sequence-numbers
                                                          (list (sequencer-cursor sequencer)))))
 
-(defmacro sequencer-next (sequencer-type)
+(defmacro sequencer-next (sequencer-type sequencer &key (n 1))
   (case sequencer-type
-    (:single-producer-sequencer '#'single-producer-sequencer-next)
-    (:multi-producer-sequencer '#'multi-producer-sequencer-next)))
+    (:single-producer-sequencer
+     `(single-producer-sequencer-next ,sequencer :n ,n))
+    (:multi-producer-sequencer
+     `(multi-producer-sequencer-next ,sequencer :n ,n))))
 
-(defmacro sequencer-publish (sequencer-type)
+(defmacro sequencer-publish (sequencer-type
+                             wait-strategy-type
+                             sequencer
+                             sequence-number)
   (case sequencer-type
-    (:single-producer-sequencer '#'single-producer-sequencer-publish)
-    (:multi-producer-sequencer '#'multi-producer-sequencer-publish)))
+    (:single-producer-sequencer
+     `(single-producer-sequencer-publish ,sequencer
+                                         ,sequence-number
+                                         (wait-strategy-signal-all-when-blocking
+                                          ,wait-strategy-type)))
+    (:multi-producer-sequencer
+     `(multi-producer-sequencer-publish ,sequencer
+                                        ,sequence-number
+                                        (wait-strategy-signal-all-when-blocking
+                                         ,wait-strategy-type)))))
 
-(defmacro sequencer-publish-low-high (sequencer-type)
+(defmacro sequencer-publish-low-high (sequencer-type
+                                      wait-strategy-type
+                                      sequencer
+                                      low-sequence-number
+                                      high-sequence-number)
   (case sequencer-type
-    (:single-producer-sequencer '#'single-producer-sequencer-publish-low-high)
-    (:multi-producer-sequencer '#'multi-producer-sequencer-publish-low-high)))
+    (:single-producer-sequencer
+     `(single-producer-sequencer-publish-low-high ,sequencer
+                                                  ,low-sequence-number
+                                                  ,high-sequence-number
+                                                  (wait-strategy-signal-all-when-blocking
+                                                   ,wait-strategy-type)))
+    (:multi-producer-sequencer
+     `(multi-producer-sequencer-publish-low-high ,sequencer
+                                                 ,low-sequence-number
+                                                 ,high-sequence-number
+                                                 (wait-strategy-signal-all-when-blocking
+                                                  ,wait-strategy-type)))))

@@ -91,9 +91,9 @@ To load "cl-disruptor":
     (loop
        with ring-buffer-sequencer = (disruptor:ring-buffer-sequencer ring-buffer)
        for i fixnum from 0 to end-sequence-number
-       do (let ((next-sequence-number (funcall (disruptor:sequencer-next
-                                                :single-producer-sequencer)
-                                               ring-buffer-sequencer)))
+       do (let ((next-sequence-number (disruptor:sequencer-next
+                                       :single-producer-sequencer
+                                       ring-buffer-sequencer)))
             (declare (type fixnum next-sequence-number))
             ;; update value in ring-buffer
             (setf (value-event-value (disruptor:get-event
@@ -101,11 +101,11 @@ To load "cl-disruptor":
                                       next-sequence-number))
                   i)
             ;; publish new value
-            (funcall (disruptor:sequencer-publish :single-producer-sequencer)
-                     ring-buffer-sequencer
-                     next-sequence-number
-                     (disruptor::wait-strategy-signal-all-when-blocking
-                      :yielding-wait-strategy))))
+            (disruptor:sequencer-publish
+             :single-producer-sequencer
+             :yielding-wait-strategy
+             ring-buffer-sequencer
+             next-sequence-number)))
     ;; wait for event-processor handle all events
     (bt:join-thread event-processor-thread)))
 ```

@@ -78,10 +78,10 @@
                               with ring-buffer-sequencer = (disruptor:ring-buffer-sequencer
                                                             ring-buffer)
                               for i from 0 below ,iterations by ,batch-size
-                              do (let* ((high-sequence-number (funcall (disruptor:sequencer-next
-                                                                        ,sequencer-type)
-                                                                       ring-buffer-sequencer
-                                                                       :n ,batch-size))
+                              do (let* ((high-sequence-number (disruptor:sequencer-next
+                                                               ,sequencer-type
+                                                               ring-buffer-sequencer
+                                                               :n ,batch-size))
                                         (low-sequence-number (the fixnum
                                                                   (1+ (- high-sequence-number
                                                                          ,batch-size)))))
@@ -96,31 +96,30 @@
                                                                    ring-buffer
                                                                    sequence-number))
                                                j))
-                                   (funcall (disruptor:sequencer-publish-low-high
-                                             ,sequencer-type)
-                                            ring-buffer-sequencer
-                                            low-sequence-number
-                                            high-sequence-number
-                                            (disruptor::wait-strategy-signal-all-when-blocking
-                                             ,wait-strategy-type))))
+                                   (disruptor:sequencer-publish-low-high
+                                    ,sequencer-type
+                                    ,wait-strategy-type
+                                    ring-buffer-sequencer
+                                    low-sequence-number
+                                    high-sequence-number)))
                            ;; without batch enabled
                            (loop
                               with ring-buffer-sequencer = (disruptor:ring-buffer-sequencer
                                                             ring-buffer)
                               for i from 0 below ,iterations
-                              do (let ((next-sequence-number (funcall (disruptor:sequencer-next
-                                                                       ,sequencer-type)
-                                                                      ring-buffer-sequencer)))
+                              do (let ((next-sequence-number (disruptor:sequencer-next
+                                                              ,sequencer-type
+                                                              ring-buffer-sequencer)))
                                    (declare (type fixnum next-sequence-number))
                                    (setf (value-event-value (disruptor:get-event
                                                              ring-buffer
                                                              next-sequence-number))
                                          i)
-                                   (funcall (disruptor:sequencer-publish ,sequencer-type)
-                                            ring-buffer-sequencer
-                                            next-sequence-number
-                                            (disruptor::wait-strategy-signal-all-when-blocking
-                                             ,wait-strategy-type))))))))
+                                   (disruptor:sequencer-publish
+                                    ,sequencer-type
+                                    ,wait-strategy-type
+                                    ring-buffer-sequencer
+                                    next-sequence-number)))))))
            do (bt:join-thread producer-thread)
            finally (bt:join-thread event-processor-thread)))
        (padded-fixnum-value result))))
