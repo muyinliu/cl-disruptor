@@ -109,9 +109,13 @@ To load "cl-disruptor":
              ring-buffer-sequencer
              next-sequence-number)))
     ;; wait for event-processor handle all events
-    (bt:join-thread event-processor-thread)))
+    (bt:join-thread event-processor-thread))
+  (padded-fixnum-value result))
 ```
-
+=>
+```=>
+4999999950000000
+```
 
 #### single-producer-sequencer with batch
 
@@ -192,7 +196,12 @@ To load "cl-disruptor":
              low-sequence-number
              high-sequence-number)))
     ;; wait for event-processor handle all events
-    (bt:join-thread event-processor-thread)))
+    (bt:join-thread event-processor-thread))
+  (padded-fixnum-value result))
+```
+=>
+```=>
+4999999950000000
 ```
 
 ### sequencer
