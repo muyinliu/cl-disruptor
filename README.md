@@ -290,6 +290,104 @@ To load "cl-disruptor":
 149999985000000
 ```
 
+#### multi-producer-sequencer with batch
+
+```lisp
+(declaim (inline padded-fixnum-value))
+(defstruct padded-fixnum
+  (pad1 0 :type fixnum)
+  (pad2 0 :type fixnum)
+  (pad3 0 :type fixnum)
+  (pad4 0 :type fixnum)
+  (pad5 0 :type fixnum)
+  (pad6 0 :type fixnum)
+  (pad7 0 :type fixnum)
+  (value 0 :type fixnum)
+  (pad8 0 :type fixnum)
+  (pad9 0 :type fixnum)
+  (pad10 0 :type fixnum)
+  (pad11 0 :type fixnum)
+  (pad12 0 :type fixnum)
+  (pad13 0 :type fixnum)
+  (pad14 0 :type fixnum))
+
+(declaim (inline value-event))
+(defstruct value-event
+  (value 0 :type fixnum))
+
+(let* ((producer-count 3)
+       (iterations 10000000)
+       (end-sequence-number (1- (* iterations producer-count)))
+       (batch-size 10)
+       (result (make-padded-fixnum)))
+  (disruptor:with-disruptor (ring-buffer
+                             ;; event-generator
+                             #'(lambda ()
+                                 (make-value-event))
+                             ;; event-handler(consumer, return T stop thread of event-processor)
+                             #'(lambda (event
+                                        next-sequence-number
+                                        end-of-batch-p)
+                                 (declare (optimize (speed 3) (safety 0) (debug 0)))
+                                 (declare (ignore end-of-batch-p))
+                                 (declare (type fixnum next-sequence-number)
+                                          (type value-event event))
+                                 (setf (padded-fixnum-value result)
+                                       (the fixnum
+                                            (+ (padded-fixnum-value result)
+                                               (value-event-value event))))
+                                 ;; return T to stop event-processor
+                                 (= end-sequence-number
+                                    next-sequence-number))
+                             :buffer-size (* 1024 64)
+                             :sequencer-type :multi-producer-sequencer
+                             :wait-strategy-type :yielding-wait-strategy
+                             :event-processor-thread-symbol event-processor-thread)
+    ;; producers
+    (loop for producer-thread
+       in (loop repeat producer-count
+             collect (bt:make-thread
+                      #'(lambda ()
+                          (loop
+                             with ring-buffer-sequencer = (disruptor:ring-buffer-sequencer
+                                                           ring-buffer)
+                             for i fixnum from 0 below iterations by batch-size
+                             do (let* ((high-sequence-number (disruptor:sequencer-next
+                                                              :multi-producer-sequencer
+                                                              ring-buffer-sequencer
+                                                              :n batch-size))
+                                       (low-sequence-number
+                                        (the fixnum
+                                             (1+ (- high-sequence-number batch-size)))))
+                                  (declare (type fixnum
+                                                 high-sequence-number
+                                                 low-sequence-number))
+                                  ;; update values in ring-buffer
+                                  (loop
+                                     for sequence-number fixnum
+                                     from low-sequence-number to high-sequence-number
+                                     and j fixnum from i below (the fixnum (+ i batch-size))
+                                     do (setf (value-event-value (disruptor:get-event
+                                                                  ring-buffer
+                                                                  sequence-number))
+                                              j))
+                                  ;; publish new values
+                                  (disruptor:sequencer-publish-low-high
+                                   :multi-producer-sequencer
+                                   :yielding-wait-strategy
+                                   ring-buffer-sequencer
+                                   low-sequence-number
+                                   high-sequence-number))))))
+       do (bt:join-thread producer-thread))
+    ;; wait for event-processor handle all events
+    (bt:join-thread event-processor-thread))
+  (padded-fixnum-value result))
+```
+=>
+```=>
+14999998500000
+```
+
 ### sequencer
 
 #### sequencer-type
