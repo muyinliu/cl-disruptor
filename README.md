@@ -16,6 +16,7 @@ Note: [LMAX Disruptor](https://github.com/LMAX-Exchange/disruptor) is written in
 ## Installation
 
 ```shell
+git clone https://github.com/muyinliu/cl-disruptor.git
 cp -r cl-disruptor ~/quicklisp/local-projects/cl-disruptor
 ```
 
