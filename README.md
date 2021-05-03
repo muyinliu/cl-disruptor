@@ -9,8 +9,8 @@ Note: [LMAX Disruptor](https://github.com/LMAX-Exchange/disruptor) is written in
 -----------------------------------------------------------------
 ## Dependencies
 
-- `cl-atomic`
-- `bordeaux-threads` v0.8.8+ (IMPORTANT NOT: commit `aa1bf8e2` fix `bt:condition-wait` for SBCL: Re-acquire lock if CONDITION-WAIT times out)
+- [cl-atomic](https://github.com/muyinliu/cl-atomic)
+- [bordeaux-threads](https://github.com/sionescu/bordeaux-threads) v0.8.8+ (IMPORTANT NOT: commit `aa1bf8e2` fix `bt:condition-wait` for SBCL: Re-acquire lock if CONDITION-WAIT times out)
 
 -----------------------------------------------------------------
 ## Installation
