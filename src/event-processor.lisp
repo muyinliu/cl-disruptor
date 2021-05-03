@@ -59,6 +59,9 @@
                                              available-sequence-number))))
                       ;; (format *terminal-io* "handle-result: ~S~%" handle-result)
                       (when handle-result
+                        (setf (sequence-number-value (batch-event-processor-sequence
+                                                      event-processor))
+                              next-sequence-number)
                         ;; FIXME
                         (return-from run)))
                     (setf next-sequence-number
