@@ -23,6 +23,17 @@
 (defstruct value-event
   (value 0 :type fixnum))
 
+(defstruct function-event
+  (operand-one     0 :type fixnum)
+  (operand-two     0 :type fixnum)
+  (step-one-result 0 :type fixnum)
+  (step-two-result 0 :type fixnum))
+
+(defstruct fizz-buzz-event
+  (fizz-p 0 :type fixnum)
+  (buzz-p 0 :type fixnum)
+  (value  0 :type fixnum))
+
 (defmacro test-disruptor (&key
                             (sequencer-type :single-producer-sequencer)
                             (wait-strategy-type :yielding-wait-strategy)
