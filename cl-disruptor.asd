@@ -3,7 +3,7 @@
   :description "cl-disruptor is a port of LMAX Disruptor(in Java) in Common Lisp"
   :version "0.0.1"
   :author "Muyinliu Xing <muyinliu@gmail.com>"
-  :license "MIT"
+  :license "ISC"
   :depends-on ("cl-atomic"
                "bordeaux-threads")
   :in-order-to ((test-op (test-op "cl-disruptor-test")))
