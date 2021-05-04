@@ -1,6 +1,6 @@
 (defsystem "cl-disruptor"
   :name "cl-disruptor"
-  :description "cl-disruptor is a fork of LMAX Disruptor(in Java) in Common Lisp"
+  :description "cl-disruptor is a port of LMAX Disruptor(in Java) in Common Lisp"
   :version "0.0.1"
   :author "Muyinliu Xing <muyinliu@gmail.com>"
   :license "MIT"
