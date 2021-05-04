@@ -1524,4 +1524,4 @@ These functions were not called:
 -----------------------------------------------------------------
 ## license of cl-disruptor
 
-MIT(See LICENSE file for details).
+ISC(See LICENSE file for details).
