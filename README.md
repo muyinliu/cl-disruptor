@@ -1,8 +1,8 @@
 # cl-disruptor
 
-cl-disruptor is a fork of [LMAX Disruptor](https://github.com/LMAX-Exchange/disruptor) in Common Lisp
+cl-disruptor is a high performance inter-thread messaging library, a port of [LMAX Disruptor](https://github.com/LMAX-Exchange/disruptor) in Common Lisp
 
-Note: due to the user-defined assembly related code, cl-disruptor can only works fine with SBCL on x86-64 CPUs
+Note: due to memory-barrier related code, cl-disruptor can only works fine with SBCL on x86-64 CPUs
 
 Note: [LMAX Disruptor](https://github.com/LMAX-Exchange/disruptor) is written in Java
 
