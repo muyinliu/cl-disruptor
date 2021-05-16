@@ -1202,28 +1202,28 @@ Evaluation took:
 
 Note: included in test cases, see section [Test][] above.
 
-### Benchmark Result ;; TODO
+### Benchmark Result
 
-On my MacBook Pro mid2014(with CPU Intel® Core™ i7-4770HQ 3.4 GHz, with macOS 10.13.6):
+Note: on my MacBook Pro 15-inch Mid 2014, with CPU Intel® Core™ i7-4770HQ(2.2 GHz, Max Turbo to 3.4 GHz, 256 KB L2 cache, 6 MB L3 cache) and macOS 11.3.1 **with Hyper-Threading disabled**
 
-| type   | batch-size | waitStrategy                      | throughput(ops) | note        |
-|--------|-----------:|-----------------------------------|----------------:|-------------|
-| 1 to 1 |          x | `YieldingWaitStrategy`            |   1,510,574,018 | default     |
-| 1 to 1 |          x | `BusySpinWaitStrategy`            |   1,508,295,625 | fastest     |
-| 1 to 1 |          x | `SleepingWaitStrategy`            |   1,522,070,015 | second fast |
-| 1 to 1 |          x | `BlockingWaitStrategy`            |      63,111,391 | second slow |
-| 1 to 1 |          x | `LiteBlockingWaitStrategy`        |     283,687,943 | slow        |
-| 1 to 1 |          x | `TimeoutBlockingWaitStrategy`     |      32,408,607 | slowest     |
-| 1 to 1 |          x | `LiteTimeoutBlockingWaitStrategy` |     251,256,281 |             |
-| 1 to 1 |         10 | `YieldingWaitStrategy`            |   1,531,393,568 |             |
-| 1 to 1 |          x | `YieldingWaitStrategy`            |                 | poller      |
-| 1 to 1 |          x | `YieldingWaitStrategy`            |                 | `LongArray` |
-| 1 to 3 |          x | `YieldingWaitStrategy`            |      60,024,009 | sequenced   |
-| 1 to 3 |          x | `YieldingWaitStrategy`            |     106,157,112 | pipeline    |
-| 1 to 3 |          x | `YieldingWaitStrategy`            |     113,765,642 | diamond     |
-| 3 to 1 |          x | `BusySpinWaitStrategy`            |      10,285,714 |             |
-| 3 to 1 |         10 | `BusySpinWaitStrategy`            |      86,206,896 |             |
-| 3 to 3 |          x | `YieldingWaitStrategy`            |                 | 3 RB 1 EP   |
+| type   | batch-size | wait-strategy                          | throughput(ops) | note        |
+|--------|-----------:|----------------------------------------|----------------:|-------------|
+| 1 to 1 |          x | `:yielding-wait-strategy`              |     151,057,401 | default     |
+| 1 to 1 |          x | `:busy-spin-wait-strategy`             |     150,829,562 |             |
+| 1 to 1 |          x | `:sleeping-wait-strategy`              |     152,207,001 |             |
+| 1 to 1 |          x | `:blocking-wait-strategy`              |       3,090,712 |             |
+| 1 to 1 |          x | `:lite-blocking-wait-strategy`         |      28,368,794 |             |
+| 1 to 1 |          x | `:timeout-blocking-wait-strategy`      |       3,240,860 |             |
+| 1 to 1 |          x | `:lite-timeout-blocking-wait-strategy` |      25,125,628 |             |
+| 1 to 1 |         10 | `:yielding-wait-strategy`              |     153,139,356 |             |
+| 1 to 1 |          x | `:yielding-wait-strategy`              |                 | poller      |
+| 1 to 1 |          x | `:yielding-wait-strategy`              |                 | `LongArray` |
+| 1 to 3 |          x | `:yielding-wait-strategy`              |      60,024,009 | sequenced   |
+| 1 to 3 |          x | `:yielding-wait-strategy`              |     106,157,112 | pipeline    |
+| 1 to 3 |          x | `:yielding-wait-strategy`              |     113,765,642 | diamond     |
+| 3 to 1 |          x | `:busy-spin-wait-strategy`             |      10,285,714 |             |
+| 3 to 1 |         10 | `:busy-spin-wait-strategy`             |      86,206,896 |             |
+| 3 to 3 |          x | `:yielding-wait-strategy`              |                 | 3 RB 1 EP   |
 
 -----------------------------------------------------------------
 ## Profile
